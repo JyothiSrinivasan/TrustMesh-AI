@@ -357,6 +357,56 @@ Implemented and locally tested:
 
 ---
 
+## Demo & Functional Verification
+
+TrustMesh AI has been locally tested as a functional Zero Trust cybersecurity simulation platform.
+
+### Verified Demonstration
+
+| Component | Verification |
+|---|---|
+| React Command Center | Working |
+| Interactive 3D Digital Trust Twin | Working |
+| FastAPI Security Policy Engine | Working |
+| ALLOW / CHALLENGE / DENY Decisions | Verified with predefined scenarios |
+| Five n8n AI Agent Workflows | All five reported successful execution |
+| Local Ollama Qwen2.5 Integration | AI investigation findings generated |
+| SQLite Incident Database | Incident records stored and retrieved |
+| PDF Investigation Reports | Successfully generated and downloaded |
+
+### Security Scenario Results
+
+| Scenario | Decision | Risk Score |
+|---|---|---|
+| Trusted Employee | ALLOW | 0/100 |
+| Untrusted Device | CHALLENGE | 40/100 |
+| Suspicious Login | DENY | 100/100 |
+
+### Verified Incident: INC-0011
+
+The suspicious-login simulation produced the following results:
+
+- **Identity:** bob
+- **Device:** laptop-02
+- **Protected Resource:** finance-reports
+- **Security Decision:** DENY
+- **Risk Score:** 100/100 (HIGH)
+- **AI Agent Execution:** 5/5 successful
+
+The generated six-page PDF report includes security indicators, AI-generated findings, recommended investigation actions, and audit information.
+
+These results demonstrate simulated security-policy enforcement and AI-assisted investigation. They do not constitute production identity verification or real-world attack detection.
+
+## Demonstration Links
+
+- **Source Code:** https://github.com/JyothiSrinivasan/TrustMesh-AI
+- **Frontend Preview:** https://trustmesh-ai.pages.dev
+- **Video Demonstration:** Coming soon
+
+**Deployment note:** The Cloudflare Pages deployment is a frontend preview. Full investigation functionality requires the local FastAPI backend, n8n workflows, Ollama model, and SQLite environment.
+
+---
+
 ## Author
 
 **Jyothi Srinivasan**
