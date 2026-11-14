@@ -71,6 +71,16 @@ The agents operate through n8n workflows and a locally hosted language model.
 
 **Important:** The AI agents provide advisory analysis. They do not override the deterministic policy engine.
 
+### AI Agent Workflow Source Files
+
+All five sanitized n8n workflows are available in the [n8n-workflows directory](https://github.com/JyothiSrinivasan/TrustMesh-AI/tree/main/n8n-workflows).
+
+The directory contains the Identity Intelligence, Device & Context, Behavioral Threat, Policy Decision, and Security Response & Audit agents.
+
+Each workflow can be imported into n8n and configured with a local Ollama connection. The exports exclude credential references and private instance metadata.
+
+See the directory's README for setup instructions.
+
 ---
 
 ## Technology Stack
