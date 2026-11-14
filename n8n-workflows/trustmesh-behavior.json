@@ -1,0 +1,189 @@
+{
+  "name": "TrustMesh AI — Behavioral Threat Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "trustmesh-behavior",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "eafb518b-3998-4080-98d4-ec44aa1c041c",
+      "name": "Webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "591014de-fad8-4889-88cf-b660e2183c79",
+              "name": "user_id",
+              "value": "=\t{{ $json.body.user_id }}",
+              "type": "string"
+            },
+            {
+              "id": "6c579174-79b4-4be5-b303-da8f8486ad15",
+              "name": "device_id",
+              "value": "={{ $json.body.device_id }}",
+              "type": "string"
+            },
+            {
+              "id": "bfef3a5a-44d5-412c-99dc-9f82589e857d",
+              "name": "resource_id",
+              "value": "={{ $json.body.resource_id }}",
+              "type": "string"
+            },
+            {
+              "id": "b1afae7d-66bc-4294-8d3b-e19b711e08f7",
+              "name": "decision",
+              "value": "={{ $json.body.decision }}",
+              "type": "string"
+            },
+            {
+              "id": "7ecb9d80-1c0a-4237-b437-74fdfbf55ff2",
+              "name": "reason",
+              "value": "={{ $json.body.reason }}",
+              "type": "string"
+            },
+            {
+              "id": "ce3a696e-3c06-42f8-ba92-88b17afca815",
+              "name": "failed_login_attempts",
+              "value": "={{ $json.body.failed_login_attempts }}",
+              "type": "number"
+            },
+            {
+              "id": "f290a40e-31ea-42bb-b0c7-c27a4a9f7083",
+              "name": "unusual_location",
+              "value": "={{ $json.body.unusual_location }}",
+              "type": "string"
+            },
+            {
+              "id": "8ad55314-a59f-4749-b338-acec43dfcf99",
+              "name": "impossible_travel",
+              "value": "={{ $json.body.impossible_travel }}",
+              "type": "string"
+            },
+            {
+              "id": "27ad1ee2-bbc9-455b-9847-1d397e9d21ce",
+              "name": "privilege_escalation",
+              "value": "={{ $json.body.privilege_escalation }}",
+              "type": "string"
+            },
+            {
+              "id": "00af0090-ccd0-4cf4-a457-eb5ac1f6628e",
+              "name": "access_time",
+              "value": "={{ $json.body.access_time }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "52b2a357-8dec-418c-b982-531228974faa",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "=\n{{ JSON.stringify({\n  user_id: $('Edit Fields').first().json.user_id,\n  device_id: $('Edit Fields').first().json.device_id,\n  resource_id: $('Edit Fields').first().json.resource_id,\n  decision: $('Edit Fields').first().json.decision,\n  reason: $('Edit Fields').first().json.reason,\n  failed_login_attempts: $('Edit Fields').first().json.failed_login_attempts,\n  unusual_location: $('Edit Fields').first().json.unusual_location,\n  impossible_travel: $('Edit Fields').first().json.impossible_travel,\n  privilege_escalation: $('Edit Fields').first().json.privilege_escalation,\n  access_time: $('Edit Fields').first().json.access_time,\n  ai_analysis: $json.content\n}) }}\n",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        768,
+        0
+      ],
+      "id": "89092fa2-483a-44b9-b546-4fea5a4d3b0e",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "qwen2.5:3b",
+          "mode": "id"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "\nYou are TrustMesh AI's Behavioral Threat Intelligence Agent.\n\nAnalyze access events for suspicious behavior, including:\n- Repeated failed login attempts\n- Unusual access locations\n- Impossible travel indicators\n- Privilege escalation attempts\n- Violations of access policies\n\nProvide your analysis in four sections:\n\n1. Behavioral Threat Assessment\n2. Risk Level: LOW, MEDIUM, HIGH, or CRITICAL\n3. Suspicious Indicators\n4. Recommended Security Actions\n\nUse only the supplied evidence.\nDo not invent incidents or unsupported conclusions.\nDo not change the existing policy decision.\nNever recommend bypassing security controls.\nIf evidence is insufficient, explain what is missing.\n\nKeep your response concise and professional.\n\n\n\nSECURITY RISK CONSISTENCY RULES\n\nThe TrustMesh policy engine is the authoritative\nsource for the overall security decision.\n\nUse the supplied:\n- decision\n- risk_score\n- risk_level\n- reason\n\nNever recalculate or change the overall risk level.\n\nIf the policy engine reports:\nALLOW / LOW — describe the overall risk as LOW.\nCHALLENGE / MEDIUM — describe the overall risk as MEDIUM.\nDENY / HIGH — describe the overall risk as HIGH.\n\nYou may discuss behavioral indicators separately,\nbut clearly distinguish behavioral observations\nfrom the overall policy risk assessment.\n\nDo not invent evidence or security events.\n\nNever recommend asking a user to disclose their\npassword or verification codes to an investigator.\n\nRecommended security actions must not be\ndescribed as already completed.\n"
+            },
+            {
+              "content": "=\n{{ \"Analyze this access event:\\nUser: \" + $json.user_id\n+ \"\\nDevice: \" + $json.device_id\n+ \"\\nResource: \" + $json.resource_id\n+ \"\\nFailed login attempts: \" + $json.failed_login_attempts\n+ \"\\nUnusual location: \" + $json.unusual_location\n+ \"\\nImpossible travel: \" + $json.impossible_travel\n+ \"\\nPrivilege escalation: \" + $json.privilege_escalation\n+ \"\\nAccess time: \" + $json.access_time\n+ \"\\nPolicy decision: \" + $json.decision\n+ \"\\nPolicy reason: \" + $json.reason }}\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.ollama",
+      "typeVersion": 1,
+      "position": [
+        432,
+        0
+      ],
+      "id": "0f4537a4-3c8c-48ab-b001-30077ee2fa52",
+      "name": "Message a model"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook": {
+      "main": [
+        []
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "active": false,
+  "pinData": {}
+}

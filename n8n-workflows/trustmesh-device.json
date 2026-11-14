@@ -1,0 +1,183 @@
+{
+  "name": "TrustMesh AI — Device & Context Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "trustmesh-device",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "e19ff4b9-b3f7-4e85-9444-0584a11a6980",
+      "name": "Webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "591014de-fad8-4889-88cf-b660e2183c79",
+              "name": "user_id",
+              "value": "=\t{{ $json.body.user_id }}",
+              "type": "string"
+            },
+            {
+              "id": "6c579174-79b4-4be5-b303-da8f8486ad15",
+              "name": "device_id",
+              "value": "={{ $json.body.device_id }}",
+              "type": "string"
+            },
+            {
+              "id": "bfef3a5a-44d5-412c-99dc-9f82589e857d",
+              "name": "resource_id",
+              "value": "={{ $json.body.resource_id }}",
+              "type": "string"
+            },
+            {
+              "id": "b1afae7d-66bc-4294-8d3b-e19b711e08f7",
+              "name": "decision",
+              "value": "={{ $json.body.decision }}",
+              "type": "string"
+            },
+            {
+              "id": "7ecb9d80-1c0a-4237-b437-74fdfbf55ff2",
+              "name": "reason",
+              "value": "={{ $json.body.reason }}",
+              "type": "string"
+            },
+            {
+              "id": "f7748074-9c49-4319-96fb-5adcf995251e",
+              "name": "device_trusted",
+              "value": "={{ $json.body.device_trusted }}",
+              "type": "boolean"
+            },
+            {
+              "id": "3b127acd-6195-4d48-98a0-1def305aefb9",
+              "name": "device_os",
+              "value": "={{ $json.body.device_os }}",
+              "type": "string"
+            },
+            {
+              "id": "9304de1f-2b4a-4cc5-8f16-c6c846689a60",
+              "name": "location",
+              "value": "={{ $json.body.location }}",
+              "type": "string"
+            },
+            {
+              "id": "22d9379a-248f-4f8d-b813-b2e0e53f02ef",
+              "name": "access_time",
+              "value": "={{ $json.body.access_time }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "894ab236-7768-4511-adff-b1ba7b3900fa",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "=\n{{ JSON.stringify({\n  user_id: $('Edit Fields').first().json.user_id,\n  device_id: $('Edit Fields').first().json.device_id,\n  resource_id: $('Edit Fields').first().json.resource_id,\n  decision: $('Edit Fields').first().json.decision,\n  reason: $('Edit Fields').first().json.reason,\n  ai_analysis: $json.content\n}) }}\n",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        768,
+        0
+      ],
+      "id": "8f5b457f-98bd-4cf2-98a0-2a35e44d1e7f",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "qwen2.5:3b",
+          "mode": "id"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are TrustMesh AI's Device & Context Intelligence Agent.\n\nAnalyze device trust and access context using the supplied event data.\n\nExamine device trust status, operating system, access location, access time, and the supplied policy decision.\n\nExplain potential security risks and recommend appropriate verification or remediation steps.\n\nDo not invent missing evidence. Do not change or override the supplied policy decision. Never claim to have performed a device scan or security enforcement.\n\nReturn a concise professional response with:\n1. Device Risk Assessment\n2. Context Analysis\n3. Recommended Security Action\n\nAlways recommend concrete verification or remediation steps\nfor untrusted devices, even when access is already denied.\nNever recommend granting access without successful device\nverification and policy reevaluation.\nDo not assume that location or access time is suspicious\nwithout evidence or a defined policy.\nTreat the supplied policy decision as an input, not as an\nindependently verified security decision.\n"
+            },
+            {
+              "content": "=\n{{ \"Analyze this device access event:\\nUser: \" + $json.user_id + \"\\nDevice: \" + $json.device_id + \"\\nResource: \" + $json.resource_id + \"\\nDevice trusted: \" + $json.device_trusted + \"\\nOperating system: \" + $json.device_os + \"\\nLocation: \" + $json.location + \"\\nAccess time: \" + $json.access_time + \"\\nPolicy decision: \" + $json.decision + \"\\nPolicy reason: \" + $json.reason }}\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.ollama",
+      "typeVersion": 1,
+      "position": [
+        432,
+        0
+      ],
+      "id": "90f07ce3-9eea-43e7-9bc6-0dbb4ef8fe45",
+      "name": "Message a model"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook": {
+      "main": [
+        []
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "active": false,
+  "pinData": {}
+}

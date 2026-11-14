@@ -1,0 +1,185 @@
+{
+  "name": "TrustMesh AI — Security Response & Audit Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "trustmesh-response",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "6a26393a-a9a6-49d2-ac9e-0368fa12af0c",
+      "name": "Webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "65032ecd-f206-4a0e-8777-a29d57a34799",
+              "name": "user_id",
+              "value": "={{ $json.body.user_id }}",
+              "type": "string"
+            },
+            {
+              "id": "87acc632-b3ad-4721-8a59-02e63606b85a",
+              "name": "device_id",
+              "value": "={{ $json.body.device_id }}",
+              "type": "string"
+            },
+            {
+              "id": "a954aa05-5121-423a-ad7b-be4519e01a51",
+              "name": "resource_id",
+              "value": "={{ $json.body.resource_id }}",
+              "type": "string"
+            },
+            {
+              "id": "bdc8b3a1-8b18-459d-ac79-656ee6afbd7c",
+              "name": "decision",
+              "value": "={{ $json.body.decision }}",
+              "type": "string"
+            },
+            {
+              "id": "457e32f9-ab9a-4000-82bb-a38727e431b9",
+              "name": "reason",
+              "value": "={{ $json.body.reason }}",
+              "type": "string"
+            },
+            {
+              "id": "83e71bb9-6475-4c9c-93a5-cca111256f9a",
+              "name": "risk_score",
+              "value": "={{ $json.body.risk_score }}",
+              "type": "number"
+            },
+            {
+              "id": "211747b7-f993-4f1d-839b-5617aa304d47",
+              "name": "risk_level",
+              "value": "={{ $json.body.risk_level }}",
+              "type": "string"
+            },
+            {
+              "id": "fdc9c0a3-1430-4938-abe0-6a1a7d269f40",
+              "name": "incident_type",
+              "value": "={{ $json.body.incident_type }}",
+              "type": "string"
+            },
+            {
+              "id": "8d16cdd5-a101-4779-9f2c-6be74e2e47f7",
+              "name": "recommended_action",
+              "value": "={{ $json.body.recommended_action }}",
+              "type": "string"
+            },
+            {
+              "id": "3ae52a63-558a-4617-aa04-2c92f6697478",
+              "name": "access_time",
+              "value": "={{ $json.body.access_time }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "2b0a3309-5e2a-40d7-a4a8-7eca560c2a36",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "qwen2.5:3b",
+          "mode": "list",
+          "cachedResultName": "qwen2.5:3b"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are TrustMesh AI's Security Response & Audit Agent.\nAnalyze Zero Trust access events and produce professional incident-response recommendations.\n\nReturn these sections:\n1. Incident Summary\n2. Risk Assessment\n3. Immediate Security Actions\n4. Investigation Steps\n5. Audit Summary\n\nRules:\n- Never override the supplied policy decision.\n- Do not invent evidence.\n- Clearly identify missing information.\n- Recommend human approval for sensitive actions.\n- Keep the response concise and professional.\n\n\n\nIMPORTANT: SECURITY DECISION CONSISTENCY\n\nThe TrustMesh policy engine has already determined\nthe final security decision.\n\nYou must use the exact decision provided in the\nincident data.\n\nDecision rules:\n\nALLOW:\nThe request was permitted by the policy engine.\nNever describe it as denied or blocked.\n\nCHALLENGE:\nThe request requires additional verification.\nDo NOT describe it as DENY or ALLOW.\nDo not claim that MFA was completed.\n\nDENY:\nThe request was rejected by the policy engine.\nNever describe it as permitted.\n\nThe risk score, risk level, and policy reasons\nmust match the supplied incident data.\n\nNever invent completed security actions, user\nlocations, device verification, or authentication.\n\nRecommended actions must be clearly described\nas recommendations, not actions already performed.\n\nBefore producing your final response, verify that\nyour explanation matches the exact policy decision.\n\n\n\nSECURE VERIFICATION REQUIREMENTS\n\nNever recommend that an investigator request\na user's password, OTP, recovery code, or MFA\nverification code.\n\nFor a CHALLENGE decision, recommend approved\nself-service authentication or device verification.\n\nThe user must enter credentials or verification\ncodes only into the organization's trusted\nauthentication interface.\n\nClearly distinguish recommended actions from\nactions already completed.\n\nPreserve the exact policy decision and risk score.\n"
+            },
+            {
+              "content": "={{ \"Analyze this security incident:\\nUser: \" + $json.user_id\n+ \"\\nDevice: \" + $json.device_id\n+ \"\\nResource: \" + $json.resource_id\n+ \"\\nPolicy decision: \" + $json.decision\n+ \"\\nPolicy reason: \" + $json.reason\n+ \"\\nRisk score: \" + $json.risk_score\n+ \"\\nRisk level: \" + $json.risk_level\n+ \"\\nIncident type: \" + $json.incident_type\n+ \"\\nSuggested action: \" + $json.recommended_action\n+ \"\\nAccess time: \" + $json.access_time }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.ollama",
+      "typeVersion": 1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "fe71c5b1-e26e-44ba-9100-7f008d0a36fe",
+      "name": "Message a model"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({\n  user_id: $('Edit Fields').first().json.user_id,\n  device_id: $('Edit Fields').first().json.device_id,\n  resource_id: $('Edit Fields').first().json.resource_id,\n  decision: $('Edit Fields').first().json.decision,\n  reason: $('Edit Fields').first().json.reason,\n  risk_score: $('Edit Fields').first().json.risk_score,\n  risk_level: $('Edit Fields').first().json.risk_level,\n  incident_type: $('Edit Fields').first().json.incident_type,\n  recommended_action: $('Edit Fields').first().json.recommended_action,\n  access_time: $('Edit Fields').first().json.access_time,\n  ai_analysis: $json.content\n}) }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        816,
+        0
+      ],
+      "id": "61ceaf69-d7a8-4f3f-af93-da6bbb9410d4",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "active": false,
+  "pinData": {}
+}
