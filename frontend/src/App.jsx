@@ -4,7 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Html, Line, Stars } from "@react-three/drei";
 import {
   Shield, ShieldAlert, Activity, BrainCircuit,
-  Database, Play, RefreshCw, Lock, CheckCircle2
+  Database, Play, RefreshCw, Lock
 } from "lucide-react";
 import "./App.css";
 import IncidentStory from "./IncidentStory";
@@ -21,7 +21,7 @@ const AGENTS = [
 const SCENARIOS = {
   normal: {
     title: "Trusted Employee",
-    user_id: "alice",
+    user_id: "aruna",
     device_id: "laptop-01",
     resource_id: "finance-reports",
     user_role: "finance-admin",
@@ -31,7 +31,7 @@ const SCENARIOS = {
   },
   suspicious: {
     title: "Suspicious Login",
-    user_id: "bob",
+    user_id: "ravi",
     device_id: "laptop-02",
     resource_id: "finance-reports",
     user_role: "employee",
@@ -41,7 +41,7 @@ const SCENARIOS = {
   },
   challenge: {
     title: "Untrusted Device",
-    user_id: "charlie",
+    user_id: "naveen",
     device_id: "tablet-03",
     resource_id: "public-dashboard",
     user_role: "employee",
@@ -327,65 +327,47 @@ export default function App() {
         </section>
 
         <section className="panel story-panel">
-        <IncidentStory
-          key={selected?.id ?? "empty"}
-          incident={selected}
-        />
-        {selected && (
-          <a
-            className="report-download"
-            href={`/api/incidents/${selected.id}/report`}
-            download={`TrustMesh_Incident_${selected.id}.pdf`}
-          >
-            <FileDown size={18} />
-            Download PDF Investigation Report
-          </a>
+        <div className="panel-title">
+          <span>
+            <ShieldAlert size={18} />
+            LATEST SECURITY DECISION
+          </span>
+        </div>
+
+        {selected ? (
+          <div className="decision-box">
+            <span>
+              INC-{String(selected.id).padStart(4, "0")}
+            </span>
+
+            <strong
+              className={
+                selected.decision === "DENY"
+                  ? "danger"
+                  : selected.decision === "CHALLENGE"
+                  ? "warning"
+                  : "success"
+              }
+            >
+              {selected.decision}
+            </strong>
+
+            <small>
+              Risk Score: {selected.risk_score}/100
+            </small>
+
+            <button
+              type="button"
+              className="primary-btn"
+              onClick={() => setActivePage("investigations")}
+            >
+              View Full Investigation
+            </button>
+          </div>
+        ) : (
+          <p>No investigations available yet.</p>
         )}
-        </section>
-
-
-        <section className="bottom-grid">
-          <div className="panel">
-            <div className="panel-title"><span><BrainCircuit size={18} /> AI AGENT INTELLIGENCE</span></div>
-            <div className="agent-list">
-              {AGENTS.map(([key, name]) => {
-                const agent = selected?.agent_results?.[key];
-                return (
-                  <details key={key} className="agent-card">
-                    <summary>
-                      <span><CheckCircle2 size={17} /> {name}</span>
-                      <small>{agent?.status || "Waiting"}</small>
-                    </summary>
-                    <div className="agent-analysis">
-                      {agent?.analysis || agent?.message || "No investigation results yet."}
-                    </div>
-                  </details>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="panel">
-            <div className="panel-title">
-              <span><Database size={18} /> INCIDENT HISTORY</span>
-              <button className="icon-btn" onClick={loadIncidents}><RefreshCw size={16} /></button>
-            </div>
-            <div className="incident-list">
-              {incidents.length === 0 && <p>No incidents recorded yet.</p>}
-              {incidents.map(item => (
-                <button
-                  key={item.id}
-                  className={`incident-row ${selected?.id === item.id ? "selected" : ""}`}
-                  onClick={() => setSelected(item)}
-                >
-                  <span><b>INC-{String(item.id).padStart(4, "0")}</b><small>{item.user_id} · {item.device_id}</small></span>
-                  <span className={item.decision === "DENY" ? "danger" : "success"}>{item.decision}</span>
-                  <span>{item.risk_score}/100</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        </section>
+      </section>
         </>
       )}
 
