@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import "./App.css";
 import IncidentStory from "./IncidentStory";
+import ReactMarkdown from "react-markdown";
 
 const AGENTS = [
   ["identity", "Identity Intelligence"],
@@ -104,6 +105,10 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [activePage, setActivePage] = useState("command");
+  const [selectedAgent, setSelectedAgent] = useState("identity");
+  const [incidentSearch, setIncidentSearch] = useState("");
+  const [decisionFilter, setDecisionFilter] = useState("ALL");
+  const [riskFilter, setRiskFilter] = useState("ALL");
 
   
   const loadIncidents = useCallback(async () => {
@@ -186,6 +191,27 @@ export default function App() {
   const denied = incidents.filter(i => i.decision === "DENY").length;
   const allowed = incidents.filter(i => i.decision === "ALLOW").length;
   const risk = selected?.risk_score ?? 0;
+
+
+  const filteredIncidents = incidents.filter((item) => {
+    const search = incidentSearch.trim().toLowerCase();
+
+    const matchesSearch =
+      String(item.id).includes(search) ||
+      String(item.user_id ?? "").toLowerCase().includes(search) ||
+      String(item.device_id ?? "").toLowerCase().includes(search);
+
+    const matchesDecision =
+      decisionFilter === "ALL" || item.decision === decisionFilter;
+
+    const score = Number(item.risk_score ?? 0);
+    const level = score >= 70 ? "HIGH" : score >= 30 ? "MEDIUM" : "LOW";
+
+    const matchesRisk = riskFilter === "ALL" || level === riskFilter;
+
+    return matchesSearch && matchesDecision && matchesRisk;
+  });
+
 
 
   return (
@@ -363,35 +389,155 @@ export default function App() {
         </>
       )}
 
+
 {activePage === "agents" && (
   <div className="page-content">
     <h1>AI Agent Network</h1>
-    <p>Live investigation intelligence from five AI security agents.</p>
+    <p>
+      Interactive multi-agent security intelligence powered by
+      n8n and Ollama.
+    </p>
 
-    <div className="agent-list">
-      {AGENTS.map(([key, name]) => {
-        const agent = selected?.agent_results?.[key];
+    <div className="agent-network-layout">
 
-        return (
-          <details key={key} className="agent-card">
-            <summary>
-              <span>
-                <BrainCircuit size={18} /> {name}
+      {/* Interactive agent network */}
+      <div className="panel agent-network-panel">
+        <div className="panel-title">
+          <span>
+            <BrainCircuit size={18} />
+            MULTI-AGENT ORCHESTRATION
+          </span>
+        </div>
+
+        <div className="agent-network-visual">
+          <svg
+            className="agent-network-lines"
+            viewBox="0 0 600 400"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <line x1="300" y1="200" x2="300" y2="45" />
+            <line x1="300" y1="200" x2="90" y2="145" />
+            <line x1="300" y1="200" x2="510" y2="145" />
+            <line x1="300" y1="200" x2="160" y2="350" />
+            <line x1="300" y1="200" x2="440" y2="350" />
+          </svg>
+
+          <div className="agent-core">
+            <Shield size={28} />
+            <strong>SECURITY</strong>
+            <small>ORCHESTRATOR</small>
+          </div>
+
+          {AGENTS.map(([key, name], index) => {
+            const agent = selected?.agent_results?.[key];
+
+            return (
+              <button
+                type="button"
+                key={key}
+                className={`agent-node agent-node-${index}
+                  ${selectedAgent === key ? "agent-node-active" : ""}`}
+                onClick={() => setSelectedAgent(key)}
+              >
+                <BrainCircuit size={22} />
+                <strong>{name}</strong>
+                <small>{agent?.status || "Waiting"}</small>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Selected agent intelligence */}
+      <div className="panel agent-detail-panel">
+        <div className="panel-title">
+          <span>
+            <BrainCircuit size={18} />
+            AGENT INTELLIGENCE
+          </span>
+        </div>
+
+        <h2>
+          {AGENTS.find(([key]) => key === selectedAgent)?.[1]}
+        </h2>
+
+        <p>
+          Investigation findings from the selected AI security agent.
+        </p>
+
+
+        {selected && (
+          <div className="agent-incident-context">
+            <div className="agent-context-header">
+              <strong>
+                INC-{String(selected.id).padStart(4, "0")}
+              </strong>
+              <span className={`agent-decision decision-${String(selected.decision).toLowerCase()}`}>
+                {selected.decision}
               </span>
-              <small>{agent?.status || "Waiting"}</small>
-            </summary>
-
-            <div className="agent-analysis">
-              {agent?.analysis ||
-                agent?.message ||
-                "Run an investigation to view agent findings."}
             </div>
-          </details>
-        );
-      })}
+
+            <div className="agent-context-grid">
+              <div>
+                <small>IDENTITY</small>
+                <strong>{selected.user_id}</strong>
+              </div>
+              <div>
+                <small>DEVICE</small>
+                <strong>{selected.device_id}</strong>
+              </div>
+              <div>
+                <small>RESOURCE</small>
+                <strong>{selected.resource_id}</strong>
+              </div>
+              <div>
+                <small>RISK SCORE</small>
+                <strong>{selected.risk_score}/100</strong>
+              </div>
+            </div>
+          </div>
+        )}
+
+
+        <div className="agent-detail-status">
+          <span>Execution Status</span>
+          <strong>
+            {selected?.agent_results?.[selectedAgent]?.status ||
+              "Waiting"}
+          </strong>
+        </div>
+
+        
+        <div className="agent-detail-analysis">
+          <h3>AI Investigation Findings</h3>
+
+          <div className="agent-markdown">
+            <ReactMarkdown>
+              {String(
+                selected?.agent_results?.[selectedAgent]?.analysis ||
+                selected?.agent_results?.[selectedAgent]?.message ||
+                "Run a security investigation from the Command Center to view AI findings."
+              )}
+            </ReactMarkdown>
+          </div>
+        </div>
+
+
+        <button
+          type="button"
+          className="primary-btn"
+          onClick={() => setActivePage("command")}
+        >
+          <Activity size={17} />
+          Open Command Center
+        </button>
+      </div>
+
     </div>
   </div>
 )}
+
 
 {activePage === "investigations" && (
   <div className="page-content">
@@ -425,6 +571,54 @@ export default function App() {
     <h1>Incident Database</h1>
     <p>Security investigation history stored in SQLite.</p>
 
+
+<div className="database-filters">
+  <input
+    type="search"
+    placeholder="Search incident ID, user or device..."
+    value={incidentSearch}
+    onChange={(e) => setIncidentSearch(e.target.value)}
+  />
+
+  <select
+    value={decisionFilter}
+    onChange={(e) => setDecisionFilter(e.target.value)}
+  >
+    <option value="ALL">All Decisions</option>
+    <option value="ALLOW">ALLOW</option>
+    <option value="CHALLENGE">CHALLENGE</option>
+    <option value="DENY">DENY</option>
+  </select>
+
+  <select
+    value={riskFilter}
+    onChange={(e) => setRiskFilter(e.target.value)}
+  >
+    <option value="ALL">All Risk Levels</option>
+    <option value="LOW">Low Risk</option>
+    <option value="MEDIUM">Medium Risk</option>
+    <option value="HIGH">High Risk</option>
+  </select>
+</div>
+
+<p className="database-count">
+  Showing {filteredIncidents.length} of {incidents.length} incidents
+</p>
+
+<button
+  type="button"
+  className="clear-filters-btn"
+  onClick={() => {
+    setIncidentSearch("");
+    setDecisionFilter("ALL");
+    setRiskFilter("ALL");
+  }}
+>
+  Clear Filters
+</button>
+
+
+
     <button
       className="primary-btn"
       onClick={loadIncidents}
@@ -436,7 +630,15 @@ export default function App() {
     <div className="incident-list">
       {incidents.length === 0 && <p>No incidents recorded yet.</p>}
 
-      {incidents.map((item) => (
+      {filteredIncidents.length === 0 && (
+  <div className="database-empty">
+    <Database size={32} />
+    <h3>No matching incidents</h3>
+    <p>Try changing your search or clearing the filters.</p>
+  </div>
+)}
+
+      {filteredIncidents.map((item) => (
         <button
           key={item.id}
           className={`incident-row ${
