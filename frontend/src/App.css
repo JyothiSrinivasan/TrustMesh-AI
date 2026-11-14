@@ -206,3 +206,49 @@ select { width: 100%; padding: 13px; border-radius: 8px; color: #e5f4ff; backgro
 .report-download:hover {
   background: #5eead4;
 }
+
+
+.sidebar .nav-item,
+.sidebar .nav-active {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  appearance: none;
+}
+
+.sidebar .nav-item {
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+.sidebar .nav-item:hover {
+  background: rgba(45, 212, 191, 0.08);
+  color: #2dd4bf;
+}
+
+.sidebar .nav-item:focus-visible,
+.sidebar .nav-active:focus-visible {
+  outline: 2px solid #2dd4bf;
+  outline-offset: 2px;
+}
+
+
+/* Align secondary pages with Command Center */
+.main-content {
+  align-content: start;
+}
+
+.page-content {
+  width: 100%;
+  margin: 0;
+  padding-top: 0;
+}
+
+.page-content h1 {
+  margin-top: 0;
+  margin-bottom: 12px;
+}

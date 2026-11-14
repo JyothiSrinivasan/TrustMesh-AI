@@ -103,6 +103,7 @@ export default function App() {
   const [scenario, setScenario] = useState("suspicious");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [activePage, setActivePage] = useState("command");
 
   
   const loadIncidents = useCallback(async () => {
@@ -186,19 +187,61 @@ export default function App() {
   const allowed = incidents.filter(i => i.decision === "ALLOW").length;
   const risk = selected?.risk_score ?? 0;
 
+
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <div className="brand"><Shield size={28} /> TrustMesh<span>AI</span></div>
-        <div className="sidebar-heading">SECURITY OPERATIONS</div>
-        <div className="nav-active"><Activity size={18} /> Command Center</div>
-        <div className="nav-item"><BrainCircuit size={18} /> AI Agent Network</div>
-        <div className="nav-item"><ShieldAlert size={18} /> Threat Investigations</div>
-        <div className="nav-item"><Database size={18} /> Incident Database</div>
-        <div className="sidebar-footer">ZERO TRUST SECURITY ENGINE<br />LOCAL AI · FASTAPI · N8N</div>
+        <div className="brand">
+          <Shield size={28} />
+          TrustMesh<span>AI</span>
+        </div>
+
+        <div className="sidebar-heading">
+          SECURITY OPERATIONS
+        </div>
+
+        <button
+          type="button"
+          className={activePage === "command" ? "nav-active" : "nav-item"}
+          onClick={() => setActivePage("command")}
+        >
+          <Activity size={18} /> Command Center
+        </button>
+
+        <button
+          type="button"
+          className={activePage === "agents" ? "nav-active" : "nav-item"}
+          onClick={() => setActivePage("agents")}
+        >
+          <BrainCircuit size={18} /> AI Agent Network
+        </button>
+
+        <button
+          type="button"
+          className={activePage === "investigations" ? "nav-active" : "nav-item"}
+          onClick={() => setActivePage("investigations")}
+        >
+          <ShieldAlert size={18} /> Threat Investigations
+        </button>
+
+        <button
+          type="button"
+          className={activePage === "database" ? "nav-active" : "nav-item"}
+          onClick={() => setActivePage("database")}
+        >
+          <Database size={18} /> Incident Database
+        </button>
+
+        <div className="sidebar-footer">
+          ZERO TRUST SECURITY ENGINE
+          <br />
+          LOCAL AI · FASTAPI · N8N
+        </div>
       </aside>
 
       <main className="main-content">
+        {activePage === "command" && (
+          <>
         <header className="topbar">
           <div>
             <div className="eyebrow">SECURITY INTELLIGENCE / OVERVIEW</div>
@@ -317,6 +360,106 @@ export default function App() {
             </div>
           </div>
         </section>
+        </>
+      )}
+
+{activePage === "agents" && (
+  <div className="page-content">
+    <h1>AI Agent Network</h1>
+    <p>Live investigation intelligence from five AI security agents.</p>
+
+    <div className="agent-list">
+      {AGENTS.map(([key, name]) => {
+        const agent = selected?.agent_results?.[key];
+
+        return (
+          <details key={key} className="agent-card">
+            <summary>
+              <span>
+                <BrainCircuit size={18} /> {name}
+              </span>
+              <small>{agent?.status || "Waiting"}</small>
+            </summary>
+
+            <div className="agent-analysis">
+              {agent?.analysis ||
+                agent?.message ||
+                "Run an investigation to view agent findings."}
+            </div>
+          </details>
+        );
+      })}
+    </div>
+  </div>
+)}
+
+{activePage === "investigations" && (
+  <div className="page-content">
+    <h1>Threat Investigations</h1>
+    <p>Review security incidents and AI investigation findings.</p>
+
+    {selected ? (
+      <>
+        <IncidentStory
+          key={selected.id}
+          incident={selected}
+        />
+
+        <a
+          className="report-download"
+          href={`/api/incidents/${selected.id}/report`}
+          download={`TrustMesh_Incident_${selected.id}.pdf`}
+        >
+          <FileDown size={18} />
+          Download PDF Investigation Report
+        </a>
+      </>
+    ) : (
+      <p>No investigation selected yet.</p>
+    )}
+  </div>
+)}
+
+{activePage === "database" && (
+  <div className="page-content">
+    <h1>Incident Database</h1>
+    <p>Security investigation history stored in SQLite.</p>
+
+    <button
+      className="primary-btn"
+      onClick={loadIncidents}
+    >
+      <RefreshCw size={17} />
+      Refresh Incidents
+    </button>
+
+    <div className="incident-list">
+      {incidents.length === 0 && <p>No incidents recorded yet.</p>}
+
+      {incidents.map((item) => (
+        <button
+          key={item.id}
+          className={`incident-row ${
+            selected?.id === item.id ? "selected" : ""
+          }`}
+          onClick={() => {
+            setSelected(item);
+            setActivePage("investigations");
+          }}
+        >
+          <span>
+            <b>INC-{String(item.id).padStart(4, "0")}</b>
+            <small>{item.user_id} · {item.device_id}</small>
+          </span>
+
+          <span>{item.decision}</span>
+          <span>{item.risk_score}/100</span>
+        </button>
+      ))}
+    </div>
+  </div>
+)}
+
       </main>
     </div>
   );
