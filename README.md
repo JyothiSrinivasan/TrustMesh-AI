@@ -11,8 +11,6 @@ The platform evaluates simulated access requests using identity, device, and beh
 
 **[Watch Video Demo](https://youtu.be/-mjXR60YCRQ)** | **[GitHub Repository](https://github.com/JyothiSrinivasan/TrustMesh-AI)**
 
-<img width="1890" height="1088" alt="trustmesh_frame" src="https://github.com/user-attachments/assets/b0bba06f-524e-4c08-82db-41a23870d095" />
-
 ---
 
 ## 1. Problem Statement
@@ -20,6 +18,8 @@ The platform evaluates simulated access requests using identity, device, and beh
 Traditional identity-based authentication does not always provide sufficient protection against compromised credentials, unfamiliar devices, and suspicious login activity.
 
 TrustMesh AI demonstrates how contextual risk assessment and AI-assisted security investigations can support more informed and explainable access decisions.
+
+<img width="1887" height="1084" alt="main_page" src="https://github.com/user-attachments/assets/6ad858ce-7d1f-4533-bafe-203773fdd0a9" />
 
 ## 2. Key Features
 
@@ -44,6 +44,8 @@ TrustMesh AI demonstrates how contextual risk assessment and AI-assisted securit
 | Security Response & Audit | Produces incident explanations and response recommendations |
 
 The agents provide advisory analysis. The deterministic security engine remains responsible for the final access decision.
+
+<img width="1861" height="1083" alt="agent_network" src="https://github.com/user-attachments/assets/22a59802-ee8e-4fff-b97d-3bbb7e91686d" />
 
 ## 4. System Architecture
 
@@ -70,6 +72,7 @@ FastAPI Backend
         v
 Final Decision: ALLOW / CHALLENGE / DENY
 ```
+<img width="1542" height="1077" alt="database" src="https://github.com/user-attachments/assets/30250ee1-7529-4941-9e3d-4a7cfb910a6a" />
 
 ## 5. Technology Stack
 
