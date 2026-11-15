@@ -11,7 +11,7 @@ The platform evaluates simulated access requests using identity, device, and beh
 
 **[Watch Video Demo](https://youtu.be/-mjXR60YCRQ)** | **[GitHub Repository](https://github.com/JyothiSrinivasan/TrustMesh-AI)**
 
-<img width="1890" height="1131" alt="trustmesh_frame" src="https://github.com/user-attachments/assets/935bd51d-a52d-4f8d-a3cf-bd2bb4328f25" />
+<img width="1890" height="1088" alt="trustmesh_frame" src="https://github.com/user-attachments/assets/b0bba06f-524e-4c08-82db-41a23870d095" />
 
 ---
 
