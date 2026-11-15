@@ -1,97 +1,185 @@
-# TrustMesh AI — Agentic Zero Trust Security Platform
+# TrustMesh AI
+### Explainable Multi-Agent Zero Trust Security Platform
 
-**Hackathon:** INNOVEX 2026  
-**Developer:** Jyothi Srinivasan  
-**Category:** Digital Security / AI-Powered Cybersecurity
+**INNOVEX 2026 | Digital Security | AI-Powered Cybersecurity**
 
-## Project Overview
+TrustMesh AI is a functional cybersecurity prototype combining Zero Trust principles, multi-agent AI investigation, deterministic risk scoring, and explainable access-control decisions.
 
-TrustMesh AI is an AI-powered Zero Trust cybersecurity platform that evaluates access requests using contextual risk scoring, multi-agent intelligence, and automated security decisions.
+The platform evaluates simulated access requests using identity, device, and behavioral signals to determine whether access should be **ALLOWED, CHALLENGED, or DENIED**.
 
-Instead of trusting users based solely on successful authentication, TrustMesh AI continuously evaluates identity, device trust, behavioral indicators, and security policies before determining whether access should be allowed, challenged, or denied.
+**Developed by:** Jyothi Srinivasan
 
-The platform combines deterministic security enforcement with AI-powered investigation, making access decisions explainable, auditable, and responsive to potential threats.
+**[Watch Video Demo](https://youtu.be/-mjXR60YCRQ)** | **[GitHub Repository](https://github.com/JyothiSrinivasan/TrustMesh-AI)**
 
-## Problem Statement
+---
 
-Traditional access-control systems often rely heavily on credentials and static security rules. However, valid credentials do not necessarily guarantee that an access request is safe.
+## 1. Problem Statement
 
-Compromised accounts, unfamiliar devices, suspicious login patterns, and abnormal user behavior can create significant security risks.
+Traditional identity-based authentication does not always provide sufficient protection against compromised credentials, unfamiliar devices, and suspicious login activity.
 
-Organizations need an intelligent approach that considers multiple risk signals, explains suspicious activity, and supports appropriate access-control decisions.
+TrustMesh AI demonstrates how contextual risk assessment and AI-assisted security investigations can support more informed and explainable access decisions.
 
-## Proposed Solution
+## 2. Key Features
 
-TrustMesh AI addresses this challenge through five specialized AI security agents:
+- **Five specialized AI agents:** Identity, Device, Behavior, Policy, and Security Response.
+- **Zero Trust Risk Engine:** Deterministic risk scoring and access-policy enforcement.
+- **Three Security Decisions:** ALLOW, CHALLENGE, and DENY.
+- **3D Digital Trust Twin:** Interactive visualization of security context.
+- **Threat Investigations:** Visual incident investigation timeline.
+- **AI Explanations:** Agent-generated findings and security recommendations.
+- **Incident History:** SQLite-backed investigation records.
+- **PDF Reports:** Downloadable investigation summaries.
+- **Local AI Processing:** Ollama and Qwen2.5 for local inference.
 
-1. **Identity Intelligence Agent:** Evaluates identity-related risk indicators.
-2. **Device & Context Agent:** Assesses device trust and access context.
-3. **Behavioral Threat Agent:** Investigates unusual login patterns and behavioral anomalies.
-4. **Policy Decision Agent:** Provides policy-related analysis and recommendations.
-5. **Security Response Agent:** Generates incident explanations and recommended security actions.
+## 3. Five AI Security Agents
 
-A deterministic risk engine calculates the risk score and enforces the final access decision. AI agents provide supporting analysis rather than independently overriding security policy.
+| Agent | Responsibility |
+|---|---|
+| Identity Intelligence | Analyzes identity and authentication indicators |
+| Device & Context | Evaluates device trust and contextual signals |
+| Behavioral Threat Analysis | Investigates suspicious login patterns |
+| Policy Decision Intelligence | Explains policy considerations and decisions |
+| Security Response & Audit | Produces incident explanations and response recommendations |
 
-## Key Features
+The agents provide advisory analysis. The deterministic security engine remains responsible for the final access decision.
 
-- Five AI-powered security investigation agents
-- Context-aware Zero Trust risk assessment
-- Automated ALLOW, CHALLENGE, and DENY decisions
-- Interactive 3D Digital Trust Twin
-- Visual threat investigation workflow
-- Security incident history
-- Downloadable PDF investigation reports
-- Local LLM inference for AI-assisted security analysis
+## 4. System Architecture
 
-## Technology Stack
+```text
+React + Vite Dashboard
+        |
+        v
+FastAPI Backend
+        |
+        +--> Deterministic Risk & Policy Engine
+        |
+        +--> Multi-Agent Orchestrator
+        |          |
+        |          v
+        |     n8n Workflows
+        |          |
+        |          v
+        |     Ollama + Qwen2.5
+        |
+        +--> SQLite Incident Database
+        |
+        +--> PDF Investigation Reports
+        |
+        v
+Final Decision: ALLOW / CHALLENGE / DENY
+```
 
-**Frontend:** React, Vite, Three.js  
-**Backend:** Python, FastAPI  
-**AI & Automation:** n8n, Ollama, Qwen2.5  
-**Database:** SQLite  
-**Architecture:** Multi-agent orchestration with deterministic policy enforcement
+## 5. Technology Stack
 
-## Demonstration Scenarios
+| Layer | Technologies |
+|---|---|
+| Frontend | React, Vite, JavaScript |
+| 3D Visualization | Three.js, React Three Fiber, Drei |
+| Backend | Python, FastAPI, REST APIs |
+| AI Automation | n8n |
+| Local LLM | Ollama, Qwen2.5:3b |
+| Database | SQLite |
+| PDF Generation | ReportLab |
+| Development | VS Code, Git, GitHub |
+| Frontend Hosting | Cloudflare Pages |
 
-| Scenario | Risk Score | Security Decision |
-|---|---|---|
-| Trusted identity and recognized device | 0/100 | ALLOW |
-| Access from an untrusted device | 40/100 | CHALLENGE |
-| Suspicious login behavior | 100/100 | DENY |
+## 6. Demonstration Scenarios
 
-These scenarios demonstrate how TrustMesh AI responds differently based on contextual security risk.
+| Scenario | Risk Score | Decision |
+|---|---:|---|
+| Aruna — Trusted Login | 0/100 | ALLOW |
+| Naveen — Untrusted Device | 40/100 | CHALLENGE |
+| Ravi — Suspicious Login | 100/100 | DENY |
 
-## Innovation and Technical Differentiation
+These scenarios demonstrate contextual security decisions using simulated access events.
 
-TrustMesh AI combines five specialized AI investigation workflows with a deterministic security decision engine.
+## 7. Performance Testing
 
-Its distinctive capabilities include:
+The five-agent investigation pipeline was tested locally with the following results:
 
-- Separation of AI-generated recommendations from authoritative access decisions
-- Multi-agent investigation across identity, device, behavior, policy, and response
-- Explainable security decisions supported by incident evidence
-- Interactive visualization of security events through a 3D Digital Trust Twin
-- Local AI inference without requiring a paid cloud LLM API
+| Test | Processing Time |
+|---|---:|
+| Test 1 | 5.80 seconds |
+| Test 2 | 9.86 seconds |
+| Test 3 | 8.17 seconds |
+| **Average** | **7.94 seconds** |
 
-## Performance
+These are observed local test results, not guaranteed production performance.
 
-During local testing, TrustMesh AI completed five-agent investigations in 5.80, 9.86, and 8.17 seconds, averaging approximately 7.94 seconds.
+## 8. Running Locally
 
-These measurements demonstrate the prototype's ability to complete investigations within a practical timeframe for an interactive demonstration.
+### Prerequisites
 
-## Potential Real-World Applications
+- Python and Node.js
+- Ollama with the `qwen2.5:3b` model
+- n8n
+- Required Python and frontend dependencies
 
-TrustMesh AI could be extended for enterprise identity security, financial institutions, privileged-access monitoring, security operations centers, and Zero Trust access management.
+### Backend
 
-The current implementation is a functional prototype using demonstration scenarios, not a production-certified access-control system.
+From the project root, activate the Python virtual environment and start FastAPI:
 
-## Project Links
+```powershell
+.\.venv\Scripts\python.exe -m uvicorn backend.main:app --reload --port 7654
+```
 
-**GitHub Repository:**  
-https://github.com/JyothiSrinivasan/TrustMesh-AI
+Backend URL: `http://127.0.0.1:7654`
 
-**Video Demonstration:**  
-https://youtu.be/-mjXR60YCRQ
+### Frontend
 
-**Developed by:** Jyothi Srinivasan  
-**Submitted for:** INNOVEX 2026
+From the frontend directory, install dependencies and start the Vite development server:
+
+```powershell
+npm install
+npm run dev
+```
+
+Open the local URL displayed by Vite.
+
+### AI Services
+
+Start Ollama and ensure the `qwen2.5:3b` model is installed.
+
+Import the five provided n8n workflows into a running n8n instance and configure their Ollama connections and webhook endpoints.
+
+The FastAPI orchestrator must be configured to use the correct n8n webhook URLs.
+
+**Note:** The Cloudflare Pages deployment hosts the frontend only. Full AI investigation functionality requires the backend, n8n workflows, and Ollama services.
+
+## 9. Security and Design Principles
+
+TrustMesh AI demonstrates:
+
+- Zero Trust access evaluation
+- Separation of AI recommendations and security enforcement
+- Explainable incident investigations
+- Contextual risk assessment
+- Local LLM processing
+- Auditable security decisions
+
+The application uses simulated security events and is intended for research, education, and prototype demonstration. It is not a production-ready identity and access management system.
+
+## 10. Future Enhancements
+
+- Enterprise identity-provider integration
+- Real-time authentication event ingestion
+- Continuous session risk monitoring
+- SIEM and SOAR integrations
+- Agent evaluation and security benchmarking
+- Production authentication and access-control integration
+
+## 11. Hackathon Submission
+
+**Event:** INNOVEX 2026
+
+**Project:** TrustMesh AI — Explainable Multi-Agent Zero Trust Security Platform
+
+**Developer:** Jyothi Srinivasan
+
+**Video Demonstration:** https://youtu.be/-mjXR60YCRQ
+
+**Source Code:** https://github.com/JyothiSrinivasan/TrustMesh-AI
+
+---
+
+*TrustMesh AI — Intelligent Investigation. Explainable Decisions. Zero Trust Security.*
